@@ -1,5 +1,5 @@
 import {readFileSync} from 'fs'
-import {JSONSchema4} from 'json-schema'
+import {JSONSchema4, JSONSchema4Type} from 'json-schema'
 import {ParserOptions as $RefOptions} from '@apidevtools/json-schema-ref-parser'
 import {cloneDeep, endsWith, merge} from 'lodash'
 import {dirname} from 'path'
@@ -15,7 +15,8 @@ import {validate} from './validator'
 import {isDeepStrictEqual} from 'util'
 import {link} from './linker'
 import {validateOptions} from './optionValidator'
-import {JSONSchema as LinkedJSONSchema} from './types/JSONSchema'
+import {JSONSchema as LinkedJSONSchema, NormalizedJSONSchema} from './types/JSONSchema'
+import type {AST} from './types/AST'
 
 export {EnumJSONSchema, JSONSchema, NamedEnumJSONSchema, CustomTypeJSONSchema} from './types/JSONSchema'
 
@@ -85,6 +86,10 @@ export interface Options {
    * Generate unknown type instead of any
    */
   unknownAny: boolean
+  /**
+   * Custom function to visit schema and its ast when parsing
+   */
+  visitor?: (schema: NormalizedJSONSchema | JSONSchema4Type, ast: AST) => void
 }
 
 export const DEFAULT_OPTIONS: Options = {

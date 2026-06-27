@@ -27,6 +27,22 @@ export function parse(
   processed: Processed = new Map(),
   usedNames = new Set<string>(),
 ): AST {
+  const parseResult = originalParse(schema, options, keyName, processed, usedNames)
+
+  if (options.visitor) {
+    options.visitor(schema, parseResult)
+  }
+
+  return parseResult
+}
+
+function originalParse(
+  schema: NormalizedJSONSchema | JSONSchema4Type,
+  options: Options,
+  keyName?: string,
+  processed: Processed = new Map(),
+  usedNames = new Set<string>(),
+): AST {
   if (isPrimitive(schema)) {
     if (isBoolean(schema)) {
       return parseBooleanSchema(schema, keyName, options)
